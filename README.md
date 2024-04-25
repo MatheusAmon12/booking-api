@@ -55,7 +55,7 @@ Esse projeto back-end é uma parte de um todo, ou seja, existe um front-end já 
     - `index.js` roda o comando sql do arquivo `create-tables.sql`
 - `./src/routes` contém todas os endpoints do projeto
     - `index.js` define as rotas da API
-        - obs.: a `const authRoutes` é responsável por proteger as rotas, atibuindo necessidade de autorização com o token `jwt`. É uma funcionaldidade do framework `fastify`, para utilizá-la insirir entre a definição da rota e a função da request:
+        - obs.: a `const authRoutes` é responsável por proteger as rotas, atibuindo necessidade de autorização com o token `jwt`. É uma funcionaldidade do framework `fastify`, para utilizá-la inserir entre a definição da rota e a função da request:
 
         ```js
         //preHandler
