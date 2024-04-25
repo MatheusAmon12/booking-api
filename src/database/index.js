@@ -2,7 +2,10 @@
 const pgp = require('pg-promise')()
 const { join } = require('node:path')
 
-const db = pgp("postgres://postgres:1701@localhost:5432/bookings_api_dev")
+const USER = process.env.POSTGRESQL_USER
+const PASSWORD = process.env.DB_PASSWORD
+const DATABASE = process.env.DATABASE
+const db = pgp(`postgres://${USER}:${PASSWORD}@localhost:5432/${DATABASE}`)
 
 //db.query("SELECT 1 + 1 AS result").then(result => console.log(result))
 
