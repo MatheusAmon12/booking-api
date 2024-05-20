@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 10001
 const connectionString = process.env.DATABASE_URL
 
 //Habilitar apenas em ambiente de produção
-const sslEnabled = true
+const sslEnabled = false
 const sslOptions = {
     rejectUnauthorized: false,
 }
@@ -28,7 +28,7 @@ client.connect()
 const start = async () => {
     try{
         app.listen({ port: PORT })
-        app.log.info(`Server is running on https://localhost:${PORT}`)
+        app.log.info(`Server is running on http://localhost:${PORT}`)
     } catch(err){
         app.log.error(err)
         process.exit(1)
