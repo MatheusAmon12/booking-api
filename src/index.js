@@ -7,9 +7,9 @@ const app = require("./app")
 
 const PORT = process.env.PORT || 10001
 const connectionString = process.env.DATABASE_URL
-const isProductionEnvironment = process.env.NODE_URL === "production"
 
-const sslEnabled = isProductionEnvironment
+//Habilitar apenas em ambiente de produção
+const sslEnabled = true
 const sslOptions = {
     rejectUnauthorized: false,
 }
