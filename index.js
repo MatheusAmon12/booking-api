@@ -1,6 +1,26 @@
+const {Client} = require("pg")
+
 const app = require("./src/app")
 
 const PORT = process.env.PORT || 10001
+const connectionString = process.env.DATABASE_URL
+const isProductionEnvironment = process.env.NODE_URL === "production"
+
+const sslEnabled = isProductionEnvironment
+const sslOptions = {
+    rejectUnauthorized: false,
+}
+
+const client = new Client({
+    connectionString,
+    ssl: sslEnabled ? sslOptions : false,
+})
+
+client.connect()
+    .then(() => {
+        console.log("Database connected")    
+    })
+    .catch((err) => console.error("Falha na conexão: ", err))
 
 const start = async () => {
     try{
