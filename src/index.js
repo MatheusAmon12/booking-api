@@ -5,7 +5,7 @@ const {Client} = require("pg")
 
 const app = require("./app")
 
-const PORT = process.env.PORT || 10001
+const PORT = process.env.PORT || 4000
 const connectionString = process.env.DATABASE_URL
 
 //Habilitar apenas em ambiente de produção
