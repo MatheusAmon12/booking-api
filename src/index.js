@@ -1,14 +1,10 @@
 const {Client} = require("pg")
 
-//Habilitar apenas em ambiente de desenvolvimento
-//require("dotenv").config()
-
 const app = require("./app")
 
 const PORT = process.env.PORT || 4000
 const connectionString = process.env.DATABASE_URL
 
-//Habilitar apenas em ambiente de produção
 const sslEnabled = false
 const sslOptions = {
     rejectUnauthorized: false,

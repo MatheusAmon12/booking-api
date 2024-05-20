@@ -33,7 +33,7 @@ O projeto Back-End em questão é uma API para gerenciar reservas de hotel, alé
 
 Esse projeto back-end é uma parte de um todo, ou seja, existe um front-end já desenvolvido para consumir todos os endpoints presentes. Recomenda-se a porta 3333 para rodar o servidor porque no projeto front-end a url base para as requisições é `http://localhost:3333/api`. Mas nada impede de alterar também. Desenvolva o seu Front-End para consumir essa API ou acesse o já desenvolvido [bookings-front](https://github.com/MatheusAmon12/booking). Caso não queira um Front-End recomendo o [Postman](https://www.postman.com) para interagir e testar os endpoints.
 
-Em ambiente de desenvolvimento é preciso que remova o trecho comentado que importa biblioteca dotenv para que as variáveis de ambiente sejam importadas corretamente no projeto:
+Em ambiente de desenvolvimento é preciso ajustar alguns pontos:
 
 ```js	
 const {Client} = require("pg")
@@ -45,6 +45,36 @@ const app = require("./app")
 
 const PORT = process.env.PORT || 4000
 const connectionString = process.env.DATABASE_URL
+
+const sslEnabled = false
+const sslOptions = {
+    rejectUnauthorized: false,
+}
+
+const client = new Client({
+    connectionString,
+    ssl: sslEnabled ? sslOptions : false,
+})
+
+client.connect()
+    .then(() => {
+        console.log("Database connected")    
+    })
+    .catch((err) => console.error("Falha na conexão: ", err))
+
+const start = async () => {
+    try{
+        app.listen({ port: PORT, host: "0.0.0.0" })
+        //Aplique essa abordagem apenas em ambiente de desenvolvimento
+        //app.listen({ port: PORT })
+        app.log.info(`Server is running on ${PORT}`)
+    } catch(err){
+        app.log.error(err)
+        process.exit(1)
+    }
+}
+
+start()
 ```
 
 
