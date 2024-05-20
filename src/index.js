@@ -27,8 +27,8 @@ client.connect()
 
 const start = async () => {
     try{
-        app.listen({ port: PORT })
-        app.log.info(`Server is running on http://localhost:${PORT}`)
+        app.listen({ port: PORT, host: "0.0.0.0" })
+        app.log.info(`Server is running on ${PORT}`)
     } catch(err){
         app.log.error(err)
         process.exit(1)
