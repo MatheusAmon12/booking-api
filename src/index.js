@@ -1,7 +1,7 @@
 const {Client} = require("pg")
 require("dotenv").config()
 
-const app = require("./src/app")
+const app = require("./app")
 
 const PORT = process.env.PORT || 10001
 const connectionString = process.env.DATABASE_URL
