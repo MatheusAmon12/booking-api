@@ -24,9 +24,8 @@ class BookingController{
                 body: { message: 'All fields are required!'}
             }
         }
-        //remover o id só para testes com o front-end, voltar após a integração
-        //const booking = await this.service.createBooking({ userId: user.id, roomId, guestName, checkInDate, checkOutDate })
-        const booking = await this.service.createBooking({ roomId, guestName, checkInDate, checkOutDate })
+
+        const booking = await this.service.createBooking({ userId: user.id, roomId, guestName, checkInDate, checkOutDate })
 
         return {
             code: 201,

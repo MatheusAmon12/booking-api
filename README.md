@@ -126,3 +126,174 @@ start()
 - `./src/app.js` inicia o `fastify`
 - `./src/bootstrap.js` intancia todas as classes que serão utilizadas
 - `./src/index.js` inicia o servidor
+
+## API
+
+### POST
+
+- `http://localhost:1000/api/auth/login`
+    - realiza o login de um usuário registrado
+    - recebe um json com os campos `email` e `password`, conforme o exemplo abaixo:
+
+        ```json
+        {
+            "email": "user@email.com",
+            "password": "password"
+        }
+        ```
+
+    - retorna um json com os campos o `token` e os dados do usuário logado, com os campos `id`, `name`, `email` e `password` ( a senha já estará criptografada ), conforme o exemplo abaixo:
+
+        ```json
+        {
+            "token": "nHUbBiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk3ZjgzOWU3LWRjMWYtNDNmMi1hYjgyLTM3N2VmZGZiNzFhMiIsImVtYWlsIjoidXNlckBlbWFpbC5jb20iLCJpYXQiOjE3MTYyMzE1NTIsImV4cCI6MTcxNjMxNzk1Mn0.0kCXVQSzyE3HiFdYpBpSagrIK9tbyaL4C2yxOSM897g",
+            "user": {
+                "id": "97f839e7-dc1f-43f2-ab82-377efdfb71a2",
+                "name": "User",
+                "email": "user@email.com",
+                "password": "$2a$10$mb.1C/PBBbjbbbLJvuÇBiUvyvlmJ0VYbV2Qvk6.17pOsqrzW.S8ig0K"
+            }
+        }
+        ```
+- `http://localhost:1000/api/auth/user?email=user@email.com`
+    - encontra um usuário pelo email
+    - exemplo de Front-End para consumir esse endpoint:
+
+        ```js
+        const userEmail = session.user.email
+
+        useEffect(() => {
+            api.get(`/auth/user?email=${userEmail}`)
+                .then(response => {
+                    const user = response.data.storedUser
+                    setUser(user)
+                    
+                    setUserLoaded(true)
+                })
+                .catch(error => console.log(error))
+        }, [])
+        ```	
+
+    - retorna um json com os campos `id`, `name`, `email` e `password` ( a senha será criptografada ), conforme o exemplo abaixo:
+
+        ```json
+        {
+            "storedUser": {
+                "id": "97f839e7-dc1f-43f2-ab82-377efdfb71a2",
+                "name": "User",
+                "email": "user@email.com",
+                "password": "$2a$10$mb.1C/PBBbjbbbLJvuÇBiUvyvlmJ0VYbV2Qvk6.17pOsqrzW.S8ig0K"
+            }
+        }
+        ```
+
+- `http://localhost:1000/api/auth/register`
+    - registra um usuário
+    - recebe um json com os campos `name`, `email` e `password`, conforme o exemplo abaixo:
+
+        ```json
+        {
+            "name": "User",
+            "email": "user@email.com",
+            "password": "password"
+        }
+        ```
+
+    - retorna um json com os campos `id`, `name`, `email` e `password` ( a senha já estará criptografada ), conforme o exemplo abaixo:
+
+        ```json
+        {
+            "user": {
+                "id": "97f839e7-dc1f-43f2-ab82-377efdfb71a2",
+                "name": "User",
+                "email": "user@email.com",
+                "password": "$2a$10$mb.1C/PBBbjbbbLJvuÇBiUvyvlmJ0VYbV2Qvk6.17pOsqrzW.S8ig0K"
+            }
+        }
+        ```
+
+- `http://localhost:1000/api/bookings`
+    - cria uma reserva
+    - recebe um json com os campos `roomId`, `guestName`, `checkInDate` e `checkOutDate`, conforme o exemplo abaixo:
+
+        ```json
+        {
+            "roomId": "202",
+            "guestName": "Guest",
+            "checkInDate": "2024-09-29",
+            "checkOutDate": "2024-10-20"
+        }
+        ```
+
+    - retorna uma mensagem de sucesso ou erro
+
+### GET
+
+- `http://localhost:1000/api/bookings`
+    - retorna todas as reservas
+    - retorna um json com os campos `id`, `userId`, `roomId`, `guestName`, `checkInDate` e `checkOutDate`, conforme o exemplo abaixo:
+
+        ```json
+        {
+            "id": "0d9a4be7-42af-4e5d-af34-bc0edcaa05a5",
+            "userId": null,
+            "roomId": "202",
+            "guestName": "Guest",
+            "checkInDate": "2024-09-29T00:00:00.000Z",
+            "checkOutDate": "2024-10-20T00:00:00.000Z"
+        }
+        ```
+
+- preHandler
+    - essa é a cara do preHandler, responsável por proteger as rotas: 
+
+        ```js
+        const authRoutes = {
+            preHandler: async (request, reply) => {
+                //o header contem o termo Bearer seguido do token, então retirando-o resta apenas o token
+                const token = request.headers.authorization?.replace(/^Bearer /, "")
+                if(!token) reply.code(401).send({ message: 'Unauthorized: token invalid!' })
+
+                //capturando o usuário que está enviando a requisição
+                const user = await authService.verifyToken(token)
+                if(!user) reply.code(404).send({ message: 'Unauthorized: invalid token!' })
+                request.user = user
+            }
+        }
+        ```
+
+    - Para proteger as rotas com exigência de autorização com o token `jwt` você pode incluir o preHandler da seguinte forma em todas as rotas que deseja proteger:
+
+        ```js
+        app.get('/hello', authRoutes, (request, reply) => {
+            reply.send({ message: 'Hello, world!' })
+        })
+        ``` 
+
+### PUT
+
+- `http://localhost:1000/api/auth/update`
+    - atualiza os dados de um usuário
+    - recebe um json com os campos `id`, `name`, `email` e `password`, conforme o exemplo abaixo:
+
+        ```json
+        {
+            "id": "97f839e7-dc1f-43f2-ab82-377efdfb71a2",
+            "name": "New User",
+            "email": "new_user@email.com",
+            "password": "new_password"
+        }
+        ```
+
+    - retorna um json com os campos `id`, `name`, `email` e `password` ( a senha será criptografada ), conforme o exemplo abaixo:
+
+        ```json
+        {
+            "updateUser": {
+                "id": "97f839e7-dc1f-43f2-ab82-377efdfb71a2",
+                "name": "New User",
+                "email": "new_user@email.com",
+                "password": "$2a$10$L1P1mgWizTVQu.KFiTSU3ODqsuHjz1.auL8w.A0yDy0S.HjgqnQUS"
+            }
+        }
+        ```
