@@ -1,5 +1,7 @@
 const {Client} = require("pg")
-require("dotenv").config()
+
+//Habilitar apenas em ambiente de desenvolvimento
+//require("dotenv").config()
 
 const app = require("./app")
 
