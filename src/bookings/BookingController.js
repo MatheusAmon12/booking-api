@@ -16,7 +16,7 @@ class BookingController{
     async save(request){
         const { roomId, guestName, checkInDate, checkOutDate } = request.body
         //user que faz login com o token
-        const user = request.user
+        // const user = request.user
 
         if(!roomId || !guestName || !checkInDate || !checkOutDate){
             return {
@@ -25,7 +25,7 @@ class BookingController{
             }
         }
 
-        const booking = await this.service.createBooking({ userId: user.id, roomId, guestName, checkInDate, checkOutDate })
+        const booking = await this.service.createBooking({ roomId, guestName, checkInDate, checkOutDate })
 
         return {
             code: 201,
